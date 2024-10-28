@@ -71,14 +71,7 @@ export class FlutterwaveService {
           order_id: order.id,
         },
       };
-      console.log('payload', process.env);
-      const { data } = await flutterwaveAxios.post('/payments', {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.FLUTTERWAVE_SECRET_KEY}`,
-        },
-        body: payload,
-      });
+      const { data } = await flutterwaveAxios.post('/payments', payload);
       return data;
     } catch (error) {
       const flwError = error as FlutterwaveError;
@@ -92,7 +85,7 @@ export class FlutterwaveService {
     });
 
     if (!order) {
-      throw new Error('Order not found');
+      throw new Error('Order not found.');
     }
 
     // Update order status based on webhook data

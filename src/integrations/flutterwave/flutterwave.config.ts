@@ -5,16 +5,19 @@ export const flutterwaveAxios = axios.create({
   timeout: 10000, // 10 seconds
   headers: {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${process.env.FLUTTERWAVE_SECRET_KEY}`,
   },
 });
 
+// Add request interceptor to dynamically set the Authorization header
 flutterwaveAxios.interceptors.request.use(
   (config) => {
     const secretKey = process.env.FLUTTERWAVE_SECRET_KEY;
-    if (!config.headers.Authorization && secretKey) {
-      config.headers.Authorization = `Bearer ${secretKey}`;
+    if (!secretKey) {
+      throw new Error(
+        'FLUTTERWAVE_SECRET_KEY is not defined in environment variables',
+      );
     }
+    config.headers.Authorization = `Bearer ${secretKey}`;
     return config;
   },
   (error) => {
@@ -22,6 +25,7 @@ flutterwaveAxios.interceptors.request.use(
   },
 );
 
+// Response interceptor for error handling
 flutterwaveAxios.interceptors.response.use(
   (response) => response,
   (error) => {

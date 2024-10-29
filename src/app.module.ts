@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { FlutterwaveModule } from './integrations/flutterwave/flutterwave.module';
+import { OrdersModule } from './orders/orders.module';
 import { Order } from './entities/order.entity';
 
 @Module({
@@ -15,6 +16,7 @@ import { Order } from './entities/order.entity';
     }),
     TypeOrmModule.forFeature([Order]),
     FlutterwaveModule,
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

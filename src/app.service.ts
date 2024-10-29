@@ -67,4 +67,40 @@ export class AppService {
       },
     };
   }
+
+  async verifyPayment(
+    tx_ref: string,
+    transactionId: string,
+  ): Promise<{ verified: boolean; amount: number; status: string }> {
+    const order = await this.orderRepository.findOne({
+      where: { transactionReference: tx_ref },
+    });
+
+    if (!order) {
+      throw new Error('Order not found');
+    }
+
+    const flutterwaveResponse =
+      await this.flutterwaveService.verifyPayment(transactionId);
+    console.log(flutterwaveResponse);
+    console.log(order.amount);
+
+    if (
+      flutterwaveResponse?.data?.status === 'successful' &&
+      flutterwaveResponse?.data?.currency === 'NGN'
+    ) {
+      // Success! Confirm the customer's payment
+      order.status = OrderStatus.PAID;
+      order.flutterwaveTransactionId = transactionId;
+      await this.orderRepository.save(order);
+      return {
+        verified: true,
+        amount: order.amount,
+        status: flutterwaveResponse.data.status,
+      };
+    } else {
+      // Inform the customer their payment was unsuccessful
+      return { verified: false, amount: 0, status: '' };
+    }
+  }
 }

@@ -11,6 +11,7 @@ export enum OrderStatus {
   SUCCESSFUL = 'successful',
   FAILED = 'failed',
   CANCELLED = 'cancelled',
+  PAID = 'paid',
 }
 
 @Entity('orders')

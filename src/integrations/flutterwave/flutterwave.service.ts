@@ -110,4 +110,11 @@ export class FlutterwaveService {
 
     return order;
   }
+
+  async verifyPayment(transactionId: string): Promise<FlutterwaveResponse> {
+    const { data } = await flutterwaveAxios.get(
+      `/transactions/${transactionId}/verify`,
+    );
+    return data;
+  }
 }
